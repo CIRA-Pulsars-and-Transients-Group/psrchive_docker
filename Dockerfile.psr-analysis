@@ -38,6 +38,7 @@ RUN apt-get update && \
     python3-testresources \
     python3-pip \
     python3-setuptools \
+    python3-tk \
     libfftw3-3 \
     libfftw3-bin \
     libfftw3-dev \
@@ -59,7 +60,8 @@ RUN apt-get update && \
     openssh-server \
     xorg \
     bc \
-    xauth && \
+    xauth \
+    vim && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get -y clean 
 
@@ -163,12 +165,12 @@ RUN cd $PSRXML && \
 # set tempo environment
 ENV TEMPO_DIR $PSRHOME/tempo
 ENV TEMPO $PSRHOME/tempo/install
-ENV PATH $PATH:$TEMPO/bin/
+ENV PATH $PATH:$TEMPO/bin
 # set tempo2 environment 
 ENV TEMPO2_DIR $PSRHOME/tempo2
-ENV TEMPO2 $PSRHOME/tempo2/install/
+ENV TEMPO2 $PSRHOME/tempo2/install
 ENV TEMPO2_ALIAS tempo
-ENV PATH $PATH:$TEMPO2/bin/
+ENV PATH $PATH:$TEMPO2/bin
 ENV C_INCLUDE_PATH $C_INCLUDE_PATH:$TEMPO2/include
 ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:$TEMPO2/lib
 # set psrchive environment 
@@ -185,6 +187,10 @@ ENV PATH $PATH:$DSPSR/bin
 ENV C_INCLUDE_PATH $C_INCLUDE_PATH:$DSPSR/include
 ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:$DSPSR/lib
 ENV PYTHONPATH $PYTHONPATH:$DSPSR/lib/python3.8/site-packages
+
+# general *PATH environment
+ENV PATH $PATH:$PSRHOME/bin
+ENV PYTHONPATH $PYTHONPATH:$PSRHOME/lib/python3.8/site-packages
 
 
 # tempo (and all it's little utilities)
@@ -275,14 +281,13 @@ RUN cd $DSPSR_DIR && \
     make clean
 
 
-# Add .local/bin to PATH
-ENV PATH ${PATH}:${HOME}/.local/bin
+RUN pip install --prefix=$PSRHOME --no-cache-dir -U lmfit PyWavelets
 
 # PulsePortraiture (which requires psrchive Python bindings)
-RUN pip install --user git+https://github.com/pennucci/PulsePortraiture.git@py3
+RUN pip install --prefix=$PSRHOME git+https://github.com/pennucci/PulsePortraiture.git@py3
 
 # PINT
-RUN pip install --user pint-pulsar
+RUN pip install --prefix=$PSRHOME git+https://github.com/nanograv/PINT.git
 
 
 # finally update /etc/bash.bashrc and add simple command whoamI
