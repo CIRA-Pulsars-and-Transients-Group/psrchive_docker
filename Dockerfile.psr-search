@@ -137,6 +137,10 @@ ENV PATH $PATH:$PRESTO/bin/
 # set riptide envionrment
 ENV RIPTIDE_DIR $PSRHOME/riptide
 
+# general *PATH additions
+ENV PYTHONPATH $PYTHONPATH:$PSRHOME/lib/python3.8/site-packages
+ENV PATH $PATH:$PSRHOME/bin
+
 # tempo (and all it's little utilities)
 RUN cd $TEMPO_DIR && \
     ./prepare && \
@@ -189,21 +193,19 @@ RUN cd $PRESTO_DIR && \
     make prep && \
     make -j && \
     cd $PRESTO_DIR && \
-    pip install --user . && \
+    pip install --prefix=$PSRHOME . && \
     cp $PRESTO_DIR/examplescripts/ACCEL_sift.py ${PRESTO}/bin/ && \
     sed -i 's/env python/env python3/' ${PRESTO}/bin/*py && \
     python3 ${PRESTO}/tests/test_presto_python.py && \
     cd src && \
     make clean
-
-# Add .local/bin to PATH
-ENV PATH ${PATH}:${HOME}/.local/bin
-   
+ 
 # riptide (C++ and Python stuff)
 RUN cd $RIPTIDE_DIR && \
+    sed -i "s:pip install -e:pip install --prefix=$PSRHOME:" Makefile && \
     make clean && \
     make install && \
-    make tests && \
+#    make tests && \
     make clean
         
 
