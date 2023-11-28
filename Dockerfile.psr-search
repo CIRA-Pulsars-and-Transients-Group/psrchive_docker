@@ -54,6 +54,7 @@ RUN apt-get update && \
     libblas-dev \
     liblapack-dev \
     openssh-server \
+    latex2html \
     xorg \
     bc \
     xauth && \
