@@ -57,14 +57,22 @@ RUN apt-get update && \
     latex2html \
     xorg \
     bc \
-    xauth && \
+    xauth \
+    locales && \
     rm -rf /var/lib/apt/lists/* && \
-    apt-get -y clean 
+    apt-get -y clean
 
+# Set up locale information
+RUN localedef -i en_AU -c -f UTF-8 -A /usr/share/locale/locale.alias en_AU.UTF-8
+ENV LANG en_AU.utf8
+ENV LC_ALL en_AU.utf8
+ENV LANGUAGE en_AU.utf8
+
+# Set up base python installs and/or upgrade packages
 RUN pip install pip -U && \
-    pip install numpy -U && \
-    pip install scipy -U && \
-    pip install matplotlib -U && \
+    pip install numpy==1.23.5 && \
+    pip install scipy && \
+    pip install matplotlib && \
     pip install pybind11 -U && \
     pip install ipython -U
 
@@ -130,11 +138,13 @@ RUN cd $PSRHOME/psrcat_tar && \
 ENV TEMPO_DIR $PSRHOME/tempo
 ENV TEMPO $PSRHOME/tempo/install
 ENV PATH $PATH:$TEMPO/bin/
+
 # set presto environment
 ENV PRESTO_DIR $PSRHOME/presto
 ENV PRESTO $PRESTO_DIR
 ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:$PRESTO/lib
 ENV PATH $PATH:$PRESTO/bin/
+
 # set riptide envionrment
 ENV RIPTIDE_DIR $PSRHOME/riptide
 
@@ -194,6 +204,7 @@ RUN cd $PRESTO_DIR && \
     make prep && \
     make -j && \
     cd $PRESTO_DIR && \
+    pip list && \
     pip install --prefix=$PSRHOME . && \
     cp $PRESTO_DIR/examplescripts/ACCEL_sift.py ${PRESTO}/bin/ && \
     sed -i 's/env python/env python3/' ${PRESTO}/bin/*py && \

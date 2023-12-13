@@ -58,17 +58,25 @@ RUN apt-get update && \
     libblas-dev \
     liblapack-dev \
     openssh-server \
+    latex2html \
     xorg \
     bc \
     xauth \
-    vim && \
+    locales && \
     rm -rf /var/lib/apt/lists/* && \
-    apt-get -y clean 
+    apt-get -y clean
 
+# Set up locale information
+RUN localedef -i en_AU -c -f UTF-8 -A /usr/share/locale/locale.alias en_AU.UTF-8
+ENV LANG en_AU.utf8
+ENV LC_ALL en_AU.utf8
+ENV LANGUAGE en_AU.utf8
+
+# Set up base python installs and/or upgrade packages
 RUN pip install pip -U && \
-    pip install numpy -U && \
-    pip install scipy -U && \
-    pip install matplotlib -U && \
+    pip install numpy==1.23.5 && \
+    pip install scipy && \
+    pip install matplotlib && \
     pip install ipython -U
 
 # Create psr user which will be used to run commands with reduced privileges.
