@@ -134,7 +134,7 @@ ENV C_INCLUDE_PATH $C_INCLUDE_PATH:$PSRXML/install/include
 # - build tempo2
 # - build psrchive
 # - build dspsr
-RUN wget http://www.atnf.csiro.au/people/pulsar/psrcat/downloads/psrcat_pkg.tar.gz && tar -xvf psrcat_pkg.tar.gz -C $PSRHOME && rm psrcat_pkg.tar.gz && \
+RUN wget https://www.atnf.csiro.au/research/pulsar/psrcat/downloads/psrcat_pkg.v1.71.tar.gz && tar -xvf psrcat_pkg.v1.71.tar.gz -C $PSRHOME && rm psrcat_pkg.v1.71.tar.gz && \
     wget https://www.imcce.fr/content/medias/recherche/equipes/asd/calceph/calceph-3.5.1.tar.gz && tar -xvf calceph-3.5.1.tar.gz -C $PSRHOME && rm calceph-3.5.1.tar.gz && \
     wget https://sourceforge.net/projects/swig/files/swig/swig-4.0.1/swig-4.0.1.tar.gz && tar -xvf swig-4.0.1.tar.gz -C $PSRHOME && rm swig-4.0.1.tar.gz && \
     git clone git://git.code.sf.net/p/tempo/tempo tempo && \
